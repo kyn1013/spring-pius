@@ -17,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class TodoService {
@@ -47,10 +50,42 @@ public class TodoService {
         );
     }
 
-    public Page<TodoResponse> getTodos(int page, int size) {
+    public Page<TodoResponse> getTodos(int page, int size, String weather, LocalDate updatedStartAt, LocalDate updatedEndAt) {
         Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Todo> todos = null;
+        LocalDateTime start = null;
+        LocalDateTime end = null;
 
-        Page<Todo> todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);
+        if (updatedStartAt != null && updatedEndAt != null) {
+            start = updatedStartAt.atStartOfDay();
+            end = updatedEndAt.atStartOfDay();
+        } else if (updatedStartAt != null && updatedEndAt == null) {
+            start = updatedStartAt.atStartOfDay();
+        } else if (updatedStartAt == null && updatedEndAt != null) {
+            end = updatedEndAt.atStartOfDay();
+        }
+
+        System.out.println(weather);
+        System.out.println(updatedStartAt);
+        System.out.println(updatedEndAt);
+
+        if (weather == null && updatedStartAt == null && updatedEndAt == null){
+            todos = todoRepository.findAll(pageable);
+        } else if (weather != null && updatedStartAt == null && updatedEndAt == null) {
+            todos = todoRepository.findAllByWeather(pageable, weather);
+        } else if (weather == null && updatedStartAt != null && updatedEndAt == null) {
+            todos = todoRepository.findAllByStartTime(pageable, start);
+        } else if (weather == null && updatedStartAt == null && updatedEndAt != null) {
+            todos = todoRepository.findAllByEndTime(pageable, end);
+        } else if (weather != null && updatedStartAt != null && updatedEndAt == null) {
+            todos = todoRepository.findAllByWeatherAndStartTime(pageable, weather, start);
+        } else if (weather != null && updatedStartAt == null && updatedEndAt != null) {
+            todos = todoRepository.findAllByWeatherAndEndTime(pageable, weather, end);
+        } else if (weather == null && updatedStartAt != null && updatedEndAt != null) {
+            todos = todoRepository.findAllByStartTimeAndEndTime(pageable, start, end);
+        } else {
+            todos = todoRepository.findAllByWeatherAndStartTimeAndEndTime(pageable, weather, start, end);
+        }
 
         return todos.map(todo -> new TodoResponse(
                 todo.getId(),
