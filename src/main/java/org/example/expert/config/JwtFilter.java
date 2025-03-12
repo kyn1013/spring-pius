@@ -37,6 +37,7 @@ public class JwtFilter implements Filter {
             return;
         }
 
+        // Authorization 헤더에서 토큰 추출
         String bearerJwt = httpRequest.getHeader("Authorization");
 
         if (bearerJwt == null) {
@@ -45,6 +46,7 @@ public class JwtFilter implements Filter {
             return;
         }
 
+        // 추출한 토큰값에서 접두사 제거하고 순수 토큰값만 가져옴
         String jwt = jwtUtil.substringToken(bearerJwt);
 
         try {
@@ -60,6 +62,7 @@ public class JwtFilter implements Filter {
             httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
             httpRequest.setAttribute("email", claims.get("email"));
             httpRequest.setAttribute("userRole", claims.get("userRole"));
+            httpRequest.setAttribute("nickName", claims.get("nickName"));
 
             if (url.startsWith("/admin")) {
                 // 관리자 권한이 없는 경우 403을 반환합니다.

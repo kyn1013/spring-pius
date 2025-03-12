@@ -34,7 +34,7 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Long userId, String email, UserRole userRole) {
+    public String createToken(Long userId, String email, UserRole userRole, String nickName) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -42,6 +42,7 @@ public class JwtUtil {
                         .setSubject(String.valueOf(userId))
                         .claim("email", email)
                         .claim("userRole", userRole)
+                        .claim("nickName", nickName)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
@@ -49,12 +50,14 @@ public class JwtUtil {
     }
 
     public String substringToken(String tokenValue) {
+        // 토큰이 비어있지 않고 BEARER_PREFIX로 시작하는지 확인 -> 헤더에서 BEARER_PREFIX를 제외한 토큰값을 추출함
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
         throw new ServerException("Not Found Token");
     }
 
+    // JWT를 해석(파싱)하여 토큰 내부의 데이터(payload)를 반환
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
