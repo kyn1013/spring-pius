@@ -22,8 +22,11 @@ public class Manager {
     @JoinColumn(name = "todo_id", nullable = false)
     private Todo todo;
 
+    // Manager객체 생성시에 Todo를 자동으로 주입하기 때문에 setTodo 같은 메서드는 필요가 없음
     public Manager(User user, Todo todo) {
         this.user = user;
         this.todo = todo;
     }
+
+
 }
