@@ -28,11 +28,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpRequest,
-                                    @NonNull HttpServletResponse httpResponse,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest httpRequest,
+            @NonNull HttpServletResponse httpResponse,
+            @NonNull FilterChain chain
+    ) throws ServletException, IOException {
         String authorizationHeader = httpRequest.getHeader("Authorization");
 
+        System.out.println("request" + httpRequest.getRequestURI());
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String jwt = jwtUtil.substringToken(authorizationHeader);
             try {
@@ -55,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         }
-        filterChain.doFilter(httpRequest, httpResponse);
+        chain.doFilter(httpRequest, httpResponse);
     }
 
     private void setAuthentication(Claims claims) {
@@ -64,6 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UserRole userRole = UserRole.of(claims.get("userRole", String.class));
         String nickName = claims.get("nickName", String.class);
 
+
+        System.out.println(userRole + "setAuthentication 에서 호출");
         AuthUser authUser = new AuthUser(userId, email, userRole, nickName);
         JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(authUser);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);

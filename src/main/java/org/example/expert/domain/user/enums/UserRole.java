@@ -9,6 +9,7 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum UserRole {
+
     ROLE_USER(Authority.USER),
     ROLE_ADMIN(Authority.ADMIN);
 
@@ -18,7 +19,7 @@ public enum UserRole {
         return Arrays.stream(UserRole.values())
                 .filter(r -> r.name().equalsIgnoreCase(role))
                 .findFirst()
-                .orElseThrow(() -> new InvalidRequestException("유효하지 않은 UerRole"));
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 UserRole"));
     }
 
     public static class Authority {

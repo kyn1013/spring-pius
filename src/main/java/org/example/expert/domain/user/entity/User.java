@@ -44,6 +44,7 @@ public class User extends Timestamped {
                 .findFirst()
                 .orElseThrow(() -> new ServerException("사용자 권한을 찾을 수 없습니다."));
 
+        System.out.println(firstAuthority.getAuthority() + "유저에서 터지나 ?");
         UserRole userRole = UserRole.of(firstAuthority.getAuthority());
 
         return new User(authUser.getId(), authUser.getEmail(), userRole, authUser.getNickName());

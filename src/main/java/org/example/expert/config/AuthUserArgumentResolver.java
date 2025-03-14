@@ -43,7 +43,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         String email = (String) request.getAttribute("email");
         UserRole userRole = UserRole.of((String) request.getAttribute("userRole"));
         String nickName = (String) request.getAttribute("nickName");
-
+        System.out.println("Argument");
         return new AuthUser(userId, email, userRole, nickName);
     }
 }

@@ -7,6 +7,7 @@ import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.dto.request.TodoSaveRequest;
 import org.example.expert.domain.todo.dto.response.TodoResponse;
 import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
+import org.example.expert.domain.todo.dto.response.TodoSearchResponse;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.todo.repository.TodoRepositoryQuery;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -66,10 +68,6 @@ public class TodoService {
             end = updatedEndAt.atStartOfDay();
         }
 
-        System.out.println(weather);
-        System.out.println(updatedStartAt);
-        System.out.println(updatedEndAt);
-
         if (weather == null && updatedStartAt == null && updatedEndAt == null){
             todos = todoRepository.findAll(pageable);
         } else if (weather != null && updatedStartAt == null && updatedEndAt == null) {
@@ -114,5 +112,12 @@ public class TodoService {
                 todo.getCreatedAt(),
                 todo.getModifiedAt()
         );
+    }
+
+    public Page<TodoSearchResponse> getSearchTodos(int page, int size, String title, LocalDate createdStartAt, LocalDate createdEndAt, String managerNickName) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Todo> todos = todoRepository.findBySearch(pageable, title, createdStartAt, createdEndAt, managerNickName);
+        Page<TodoSearchResponse> todoDtos = todos.map(TodoSearchResponse::from);
+        return todoDtos;
     }
 }

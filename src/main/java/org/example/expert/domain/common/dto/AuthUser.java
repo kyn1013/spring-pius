@@ -17,6 +17,8 @@ public class AuthUser {
     private final String nickName;
 
     public AuthUser(Long id, String email, UserRole userRole, String nickName) {
+        System.out.println("생성자 진입");
+        System.out.println(userRole.name() + "AuthUser 생성자에서 호출");
         this.id = id;
         this.email = email;
         this.authorities = List.of(new SimpleGrantedAuthority(userRole.name()));

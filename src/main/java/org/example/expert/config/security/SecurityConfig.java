@@ -10,12 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 
-@Configuration // 스프링 설정 클래스
+@Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity // Spring Security를 활성화하고, 추가적인 보안 설정을 하겠다
+@EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
@@ -41,7 +42,7 @@ public class SecurityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(request -> request.getRequestURI().startsWith("/auth")).permitAll()
-//                        .requestMatchers("/test").hasAuthority(UserRole.Authority.ADMIN)
+                        .requestMatchers("/test").hasAuthority(UserRole.Authority.ADMIN)
                         .requestMatchers("/open").permitAll()
                         .anyRequest().authenticated()
                 )
