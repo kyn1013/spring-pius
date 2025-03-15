@@ -57,6 +57,7 @@ public class TodoRepositoryQueryImpl implements TodoRepositoryQuery {
                         ,createdEndAtEq(createdEndAt))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(todo.createdAt.desc())
                 .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory.select(todo.count())
