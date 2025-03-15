@@ -13,5 +13,8 @@ public interface TodoRepositoryQuery {
 
     Optional<Todo> findByIdWithUser(@Param("todoId") Long todoId);
 
-    Page<Todo> findBySearch(Pageable pageable, String title, LocalDate createdStartAt, LocalDate createdEndAt, String managerNickName);
+    Optional<Todo> findByTitle(String title);
+
+    Page<Todo> findBySearchKeyword(Pageable pageable, String title, LocalDate createdStartAt, LocalDate createdEndAt, String managerNickName);
+
 }

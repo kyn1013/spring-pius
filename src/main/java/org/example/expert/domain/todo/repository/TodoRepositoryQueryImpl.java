@@ -1,23 +1,18 @@
 package org.example.expert.domain.todo.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.example.expert.domain.todo.entity.QTodo;
 import org.example.expert.domain.todo.entity.Todo;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 import static org.example.expert.domain.todo.entity.QTodo.todo;
@@ -41,38 +36,42 @@ public class TodoRepositoryQueryImpl implements TodoRepositoryQuery {
                 .fetchOne());
     }
 
+
     @Override
-    public Page<Todo> findBySearch(Pageable pageable, String title, LocalDate createdStartAt, LocalDate createdEndAt, String managerNickName) {
-        var query = jpaQueryFactory.select(todo)
+    public Optional<Todo> findByTitle(String title) {
+        return Optional.ofNullable(jpaQueryFactory.select(todo)
+                .from(todo)
+                .where(todo.title.eq(title))
+                .fetchOne());
+    }
+
+    @Override
+    public Page<Todo> findBySearchKeyword(Pageable pageable, String title, LocalDate createdStartAt, LocalDate createdEndAt, String managerNickName) {
+        List<Todo> results = jpaQueryFactory.select(todo)
                 .from(todo)
                 .join(todo.managers)
                 .fetchJoin()
-                .join(todo.comments)
-                .fetchJoin()
                 .where(titleEq(title)
-                        , managerNickNameEq(managerNickName)
-                        , createdStartAtEq(createdStartAt)
-                        , createdEndAtEq(createdEndAt))
+                        ,managerNickNameEq(managerNickName)
+                        ,createdStartAtEq(createdStartAt)
+                        ,createdEndAtEq(createdEndAt))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
-
-        var todos = query.fetch();
+                .limit(pageable.getPageSize())
+                .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory.select(todo.count())
                 .from(todo)
-                .where(titleEq(title)
-                        , managerNickNameEq(managerNickName)
-                        , createdStartAtEq(createdStartAt)
-                        , createdEndAtEq(createdEndAt));
+                .where(titleEq(title),managerNickNameEq(managerNickName),createdStartAtEq(createdStartAt),createdEndAtEq(createdEndAt));
 
-        return PageableExecutionUtils.getPage(todos, pageable, countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
+
 
     private BooleanExpression titleEq(String title) {
         if (title == null) {
             return null;
         }
-        return todo.title.like("%" + title + "%");
+        return todo.title.contains(title);
     }
 
     private BooleanExpression managerNickNameEq(String managerNickName) {
@@ -87,9 +86,10 @@ public class TodoRepositoryQueryImpl implements TodoRepositoryQuery {
             return null;
         }
 
-        LocalDateTime startAt = createdStartAt.atTime(LocalTime.MAX);
+        LocalDateTime startAt = createdStartAt.atStartOfDay();
 
-        return todo.createdAt.goe(startAt); // createdAt >= startAt
+
+        return todo.createdAt.goe( startAt ); // createdAt >= startAt
     }
 
     private BooleanExpression createdEndAtEq(LocalDate createdEndAt) {
@@ -97,8 +97,9 @@ public class TodoRepositoryQueryImpl implements TodoRepositoryQuery {
             return null;
         }
 
-        LocalDateTime endAt = createdEndAt.atStartOfDay();
+        LocalDateTime endAt = createdEndAt.atTime(LocalTime.MAX);
 
         return todo.createdAt.loe(endAt); // createdAt <= endAt
     }
+
 }

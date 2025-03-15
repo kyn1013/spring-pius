@@ -116,8 +116,24 @@ public class TodoService {
 
     public Page<TodoSearchResponse> getSearchTodos(int page, int size, String title, LocalDate createdStartAt, LocalDate createdEndAt, String managerNickName) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Todo> todos = todoRepository.findBySearch(pageable, title, createdStartAt, createdEndAt, managerNickName);
+        Page<Todo> todos = todoRepository.findBySearchKeyword(pageable, title, createdStartAt, createdEndAt, managerNickName);
         Page<TodoSearchResponse> todoDtos = todos.map(TodoSearchResponse::from);
         return todoDtos;
+    }
+
+    public TodoResponse findByTitle(String title) {
+        Todo todo = todoRepository.findByTitle(title).orElseThrow(() -> new InvalidRequestException("Todo not found"));
+
+        User user = todo.getUser();
+
+        return new TodoResponse(
+                todo.getId(),
+                todo.getTitle(),
+                todo.getContents(),
+                todo.getWeather(),
+                new UserResponse(user.getId(), user.getEmail(), user.getNickName()),
+                todo.getCreatedAt(),
+                todo.getModifiedAt()
+        );
     }
 }

@@ -12,6 +12,7 @@ import org.example.expert.domain.todo.service.TodoService;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -25,7 +26,7 @@ public class TodoController {
 
     @PostMapping("/todos")
     public ResponseEntity<TodoSaveResponse> saveTodo(
-            @Auth AuthUser authUser,
+            @AuthenticationPrincipal AuthUser authUser,
             @Valid @RequestBody TodoSaveRequest todoSaveRequest
     ) {
         return ResponseEntity.ok(todoService.saveTodo(authUser, todoSaveRequest));
@@ -47,15 +48,20 @@ public class TodoController {
         return ResponseEntity.ok(todoService.getTodo(todoId));
     }
 
+    @GetMapping("/todos/title")
+    public ResponseEntity<TodoResponse> findByTitle(@RequestParam String title) {
+        return ResponseEntity.ok(todoService.findByTitle(title));
+    }
+
     @GetMapping("/todos/search")
     public ResponseEntity<Page<TodoSearchResponse>> getSearchTodos(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String title,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdStartAt,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdEndAt,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end,
             @RequestParam(required = false) String managerNickName
     ) {
-        return ResponseEntity.ok(todoService.getSearchTodos(page, size, title, createdStartAt, createdEndAt, managerNickName));
+        return ResponseEntity.ok(todoService.getSearchTodos(page, size, title, start, end, managerNickName));
     }
 }
