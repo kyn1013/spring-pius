@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 
@@ -21,7 +20,6 @@ import org.springframework.security.web.servletapi.SecurityContextHolderAwareReq
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtUtil jwtUtil;
 
     @Bean
@@ -45,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(request -> request.getRequestURI().startsWith("/auth")).permitAll()
                         .requestMatchers("/test").hasAuthority(UserRole.Authority.ADMIN)
-                        .requestMatchers("/open").permitAll()
+                        .requestMatchers("/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
