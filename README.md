@@ -22,7 +22,7 @@
 | --- | --- | --- |
 | BUILD 완료 시간 | 약 40분 | 1분 28초 |
 
- 96.33% 성능 향상
+27.3배 빨라지도록 개선
 
 - nickname으로 일치하는 User를 검색한 경우
 
@@ -36,4 +36,4 @@
  index 적용 후
 ![Image](https://github.com/user-attachments/assets/7757a2ee-5682-472d-b08e-b175fed04426)
 
-95.36% 성능 향상
+ 21.58배 빨라지도록 개선
