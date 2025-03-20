@@ -7,7 +7,7 @@
 
 
 - 탄력적 ip적용
-![Image](https://github.com/user-attachments/assets/11bf661c-66de-407a-b855-57eb6d70d828)
+![Image](https://github.com/user-attachments/assets/5d5f5c5a-dd65-402b-8ac2-ab08b3e0c9e0)
    
 - RDS
 ![Image](https://github.com/user-attachments/assets/6f9b65fd-b5e5-49ff-884e-6bb733349987)
