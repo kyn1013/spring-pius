@@ -12,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "users")
+@Table(name = "users", indexes = @Index(name = "idx_users_nicknames", columnList = "nickName"))
 public class User extends Timestamped {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

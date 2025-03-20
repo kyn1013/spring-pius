@@ -30,6 +30,11 @@ public class UserController {
         userService.changePassword(authUser.getId(), userChangePasswordRequest);
     }
 
+    @GetMapping("/users")
+    public ResponseEntity<UserProfileResponse> searchUser(@RequestParam String nickName) {
+        return ResponseEntity.ok(userService.searchUser(nickName));
+    }
+
     // 사용자 프로필 이미지 업로드
     @PostMapping("/users/image")
     public ResponseEntity<UserProfileResponse> uploadImage(@AuthenticationPrincipal AuthUser authUser, @RequestPart MultipartFile image) throws IOException {

@@ -142,4 +142,9 @@ public class UserService {
         }
         user.updateImageUrl(null);
     }
+
+    public UserProfileResponse searchUser(String nickName) {
+        User user = userRepository.findByNickName(nickName).orElseThrow(() -> new InvalidRequestException("User not found"));
+        return new UserProfileResponse(user.getId(), user.getEmail(), user.getNickName(), user.getImageUrl());
+    }
 }
