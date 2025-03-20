@@ -3,7 +3,7 @@
 - healthcheck controller path : /health
 
 - 인스턴스
-![Image](https://github.com/user-attachments/assets/5548b683-133d-4529-8904-e054c80fe1ad)
+![Image](https://github.com/user-attachments/assets/ddc8e2b4-9109-4efa-8e82-145404eda0e2)
 
 
 - 탄력적 ip적용
