@@ -31,9 +31,9 @@
 | Average (평균 걸린 시간) | 4872ms | 226ms |
 
  index 적용 전
-![Image](https://github.com/user-attachments/assets/7757a2ee-5682-472d-b08e-b175fed04426)
+![Image](https://github.com/user-attachments/assets/f4a487e6-c0a3-405d-b8b5-5d82f8557621)
 
  index 적용 후
-![Image](https://github.com/user-attachments/assets/f4a487e6-c0a3-405d-b8b5-5d82f8557621)
+![Image](https://github.com/user-attachments/assets/7757a2ee-5682-472d-b08e-b175fed04426)
 
 95.36% 성능 향상
