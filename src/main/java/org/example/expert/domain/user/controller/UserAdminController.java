@@ -2,7 +2,9 @@ package org.example.expert.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.dto.request.UserRoleChangeRequest;
+import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.UserRole;
 import org.example.expert.domain.user.service.UserAdminService;
 import org.springframework.security.access.annotation.Secured;
@@ -23,6 +25,10 @@ public class UserAdminController {
     public void changeUserRole( @AuthenticationPrincipal AuthUser authUser,
                                 @PathVariable long userId,
                                 @RequestBody UserRoleChangeRequest userRoleChangeRequest) {
+        User requestUser = User.fromAuthUser(authUser);
+        if (requestUser.getUserRole() != UserRole.ROLE_ADMIN) {
+            throw new InvalidRequestException("admin 권한이 없습니다.");
+        }
         userAdminService.changeUserRole(authUser, userId, userRoleChangeRequest);
     }
 }
